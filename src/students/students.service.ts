@@ -2,9 +2,6 @@ import { Injectable } from '@nestjs/common';
 import {  Repository } from 'typeorm';
 import { Student } from './entities/student.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindStudentDto } from './dto/findId-student.dto';
-
-
 
 @Injectable()
 export class StudentsService {
@@ -14,22 +11,22 @@ export class StudentsService {
     private studentRepository:Repository<Student>
   ){}
 
-  async findAll(id:FindStudentDto){
+  async findAll(id:string,page:string){
   
-    if(id && id!==null){
-      let arr=[]
-      let std = await this.studentRepository.find({relations:{college:true}})
-      let std1 = std.filter(x => x.college.id === +id)
-        std1.map((x) => arr.push({'id':x.id,'name':x.name,"college":x.college.name}))
-        return arr
-    }
-
-    else if(id==undefined){
-      let arr=[]
-      let std = await this.studentRepository.find({relations:{college:true}})    
-      std.map((x)=>arr.push({'id':x.id,'name':x.name,"college":x.college.name}))
-      return arr
-    }
+    const user =  this.studentRepository
+    .createQueryBuilder("student")
+    .leftJoinAndSelect("student.college","college")
+    
+    if(page)
+    user
+    .limit(2)
+    .offset((+page-1)*2)
+    
+    if(id)
+    user.where("student.college.id = :id",{id:+id});
+    
+    return (await user.getMany())
+                         
   }
  
 }

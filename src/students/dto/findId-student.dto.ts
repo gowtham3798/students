@@ -1,7 +1,10 @@
-import { Optional } from "@nestjs/common";
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class FindStudentDto{
     @ApiProperty({required:false})
     id:string
+
+    @ApiProperty({required:false})
+    page:string
+
 }

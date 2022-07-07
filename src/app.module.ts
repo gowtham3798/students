@@ -8,13 +8,13 @@ import { College } from './students/entities/college.entity';
 import { getEnvPath } from './common/helper/env.helper';
 import { ConfigModule } from '@nestjs/config';
 
-const envFilePath: string = getEnvPath(`${__dirname}/.env`);
+const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
 
 
 @Module({
   imports: [ ConfigModule.forRoot({ envFilePath, isGlobal: true }),TypeOrmModule.forRoot(
     {  type: 'mysql',
-    host: process.env.DATABASE_HOST,
+    host: 'localhost',
     port: 3306,
     database: process.env.DATABASE_DB,
     username: process.env.DATABASE_NAME,
