@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {  Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Student } from './entities/student.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -11,21 +11,27 @@ export class StudentsService {
     private studentRepository:Repository<Student>
   ){}
 
-  async findAll(id:string,page:string){
+  async findAll(id:string,page:string,pagesize:string){
   
     const user =  this.studentRepository
     .createQueryBuilder("student")
     .leftJoinAndSelect("student.college","college")
     
-    if(page)
-    user
-    .limit(2)
-    .offset((+page-1)*2)
-    
     if(id)
     user.where("student.college.id = :id",{id:+id});
+
+    if(page)
+    user
+    .limit(5)
+    .offset((+page-1)*5)
     
-    return (await user.getMany())
+    if(page && pagesize)
+    user
+    .limit(+pagesize)
+    .offset((+page-1)*+pagesize)
+    
+    
+    return (await user.orderBy("student.name","ASC").getMany())
                          
   }
  

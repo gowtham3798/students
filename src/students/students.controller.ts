@@ -11,7 +11,7 @@ export class StudentsController {
 
   @Get()
   async findAll(@Query() request:FindStudentDto):Promise<ResponseDto[]>{
-    const user = this.studentsService.findAll(request.id,request.page);
+    const user = this.studentsService.findAll(request.id,request.page,request.pagesize);
     let data = (await user).map((x)=>({id:+(x.id),name:x.name,college:x.college.name}))
 
     return data

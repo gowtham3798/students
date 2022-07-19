@@ -1,28 +1,23 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { StudentsModule } from './students/students.module';
-import { Student } from './students/entities/student.entity';
-import { College } from './students/entities/college.entity';
-import { getEnvPath } from './common/helper/env.helper';
 import { ConfigModule } from '@nestjs/config';
-
-const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
+import { AutomapperModule } from '@automapper/nestjs';
+import { classes } from '@automapper/classes';
+import { StateUseCasesModule } from './state-use-cases/state-use-cases.module';
+import { DatabaseModule } from 'libs/database/src/database.module';
 
 
 @Module({
-  imports: [ ConfigModule.forRoot({ envFilePath, isGlobal: true }),TypeOrmModule.forRoot(
-    {  type: 'mysql',
-    host: 'localhost',
-    port: 3306,
-    database: process.env.DATABASE_DB,
-    username: process.env.DATABASE_NAME,
-    password: process.env.DATABASE_PASSWORD,
-    entities: [Student,College],
-    synchronize: true,
-  }
-  ), StudentsModule],
+  imports: [
+    ConfigModule.forRoot(),
+    AutomapperModule.forRoot({
+      options: [{ name: 'mapper', pluginInitializer: classes }],
+      singular: true,
+    }),
+    DatabaseModule,
+    StateUseCasesModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

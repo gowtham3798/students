@@ -7,4 +7,7 @@ export class FindStudentDto{
     @ApiProperty({required:false})
     page:string
 
+    @ApiProperty({required:false})
+    pagesize:string
+
 }
